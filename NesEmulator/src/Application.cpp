@@ -84,6 +84,9 @@ bool Application::OnUserCreate()
 	// Load the cartridge
 	cart = std::make_shared<Cartridge>("./nesfiles/super_mario_bros.nes");
 
+	if (!cart->ImageValid())
+		return false;
+
 	// Insert cartridge into bus
 	bus.insertCartridge(cart);
 
@@ -92,14 +95,23 @@ bool Application::OnUserCreate()
 
 	// Reset NES
 	bus.reset();
-
 	return true;
 }
 
+	int count = 0;
 // Any update to the window like resize, etc
 bool Application::OnUserUpdate(float fElapsedTime)
 {
+
 	Clear(olc::BLACK);
+
+	if (GetKey(olc::Key::SPACE).bPressed)
+		bEmulationRun = !bEmulationRun;
+	if (GetKey(olc::Key::R).bPressed)
+		bus.reset();
+	if (GetKey(olc::Key::P).bPressed)
+		(++nSelectedPalette) &= 0x07;
+
 	if (bEmulationRun)
 	{
 		if (fResidualTime > 0.0f)
@@ -107,7 +119,9 @@ bool Application::OnUserUpdate(float fElapsedTime)
 		else
 		{
 			fResidualTime += (1.0f / 60.0f) - fElapsedTime;
-			do { bus.clock(); } while (!bus.ppu.frame_complete);
+			do { 
+				bus.clock();
+			} while (!bus.ppu.frame_complete);
 			bus.ppu.frame_complete = false;
 		}
 	}
@@ -137,10 +151,7 @@ bool Application::OnUserUpdate(float fElapsedTime)
 	}
 
 
-	if (GetKey(olc::Key::SPACE).bPressed) bEmulationRun = !bEmulationRun;
-	if (GetKey(olc::Key::R).bPressed) bus.reset();
-
-	if (GetKey(olc::Key::P).bPressed) (++nSelectedPalette) &= 0x07;
+	
 
 	DrawCpu(516, 2); // draw the state of the cpu
 	DrawCode(516, 72, 26);// draw some disassembled code
@@ -161,6 +172,18 @@ bool Application::OnUserUpdate(float fElapsedTime)
 
 
 	DrawSprite(0, 0, &bus.ppu.GetScreen(), 2);
+
+	//olc::Sprite& s = bus.ppu.GetPatternTable(1, nSelectedPalette);
+	//for (uint8_t y = 0; y < 30; y++)
+	//{
+	//	for (uint8_t x = 0; x < 32; x++)
+	//	{
+	//		//DrawString(x * 16, y * 16, hex((uint32_t)bus.ppu.vRam[0][y * 32 + x], 2));
+	//		uint8_t id = (uint32_t)bus.ppu.vRam[0][y * 32 + x];
+	//		DrawPartialSprite(x * 16, y * 16, &s,
+	//			(id & 0x0F) << 3, ((id >> 4) & 0x0F) << 3, 8, 8, 2);
+	//	}
+	//}
 
 	return true;
 }

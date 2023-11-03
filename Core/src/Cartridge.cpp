@@ -32,7 +32,7 @@ Cartridge::Cartridge(const std::string& sFileName)
 		 
 		// Determine Mapper ID--> extracting which mapper rom is using
 		nMapperID = ((header.mapper2 >> 4) << 4) | (header.mapper1 >> 4);
-		mirror = (header.mapper1 & 0x01) ? VERTICAL : HORIZONTAL;
+		mirror = (header.mapper1 & 0x01) ? VERTICAL : HORIZONTAL;// extracting how the cartridge is mirrored
 
 		// "Discover" File Format-->> there are 3 types of file formats and we are interested in type 1 file format
 		uint8_t nFileType = 1;
@@ -130,4 +130,12 @@ bool Cartridge::ppuWrite(uint16_t address, uint8_t data)
 	}
 	else
 		return false;
+}
+
+void Cartridge::reset()
+{
+	// Note: This does not reset the ROM contents,
+	// but does reset the mapper.
+	/*if (pMapper != nullptr)
+		pMapper->reset();*/
 }
