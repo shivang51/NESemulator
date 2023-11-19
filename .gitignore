@@ -6,4 +6,4 @@ x64/
 !Gui/external/raylib/include/*.o
 
 */out/
-out/
+out
