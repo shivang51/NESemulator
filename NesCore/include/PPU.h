@@ -4,7 +4,6 @@
 #include <cstring>
 #include "CPU.h"
 #include "Cartridge.h"
-//#include "external\PixelGameEngine.h"
 #include "LibGui.h"
 
 class PPU

@@ -3,13 +3,13 @@ CXX_VERSION = c++20
 
 NAME = nesemulator
 
-TARGET_DIR = ../out/
+TARGET_DIR = ../out
 
 SRC_DIR = src
 
-INCLUDE = -Iinclude/ -Iexternal/raylib/include -I../Gui -I../NesCore -I../Gui/external/raylib/include
+INCLUDE = -I./include/ -I../Gui -I../NesCore -I../Gui/external/raylib/include
 
-LIB_INCLUDE_DIRS = -L$(TARGET_DIR) -Lexternal/raylib/lib 
+LIB_INCLUDE_DIRS = -L$(TARGET_DIR) -L../Gui/external/raylib/lib
 
 LIBS = -lraylib -lGL -lgui -lnescore 
 
@@ -17,36 +17,21 @@ INTERMEDIATE_DIR = ./out/obj/
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 
-TARGET = $(TARGET_DIR)$(NAME)
+TARGET = $(TARGET_DIR)/$(NAME)
 
 OBJECTS = $(patsubst %.cpp,$(INTERMEDIATE_DIR)%.o,$(SRC_FILES))
 
-INT_COMPILE_FLAGS=-fPIC -W
-
 LDFLAGS = $(LIB_INCLUDE_DIRS) $(LIBS)
-COMPILE_FLAGS = -W -Wall 
+COMPILE_FLAGS = -W -Wall -DPLATFORM_DESKTOP -D_DEFAULT_SOURCE -Wno-missing-braces -Wunused-result -O2 
 
-all: $(TARGET)
-	$(info [+] Building $(TARGET) done)
+$(NAME): $(TARGET)
 
-$(TARGET): $(OBJECTS) $(TARGET_DIR)
+$(TARGET): $(OBJECTS)
 	$(info [+] Generating $(TARGET))
-	$(CXX) -std=$(CXX_VERSION) -o $@ $(OBJECTS) $(COMPILE_FLAGS) $(LDFLAGS) 
+	$(CXX) -o $@ $(OBJECTS) -std=$(CXX_VERSION) $(COMPILE_FLAGS) $(LDFLAGS) 
 
-$(INTERMEDIATE_DIR)%.o: %.cpp $(INTERMEDIATE_DIR)
-	$(CXX) -std=$(CXX_VERSION) $(INCLUDE) $(INT_COMPILE_FLAGS) -c $< -o $@	
+$(INTERMEDIATE_DIR)%.o: %.cpp | $(INTERMEDIATE_DIR)
+	$(CXX) -o $@ -c $< -std=$(CXX_VERSION) $(INCLUDE) $(COMPILE_FLAGS) 
 
-# path checks
-CHECK_PATH = $(shell test -e $(path))
-
-ifeq ($(CHECK_PATH),)
-$(TARGET_DIR):
-	mkdir -p $(TARGET_DIR)
-endif
-
-ifeq ($(CHECK_PATH),)
 $(INTERMEDIATE_DIR):
-	mkdir -p $(INTERMEDIATE_DIR)src
-endif
-
-
+	mkdir -p $(INTERMEDIATE_DIR)/src

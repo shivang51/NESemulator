@@ -5,6 +5,10 @@
 Application::Application() {
 }
 
+Application::~Application() {
+    Gui::Destroy();
+}
+
 std::string Application::hex(uint32_t n, uint8_t d)
 {
     std::string s(d, '0');
@@ -83,7 +87,7 @@ void Application::DrawCode(int x, int y, int nLines)
 bool Application::OnUserCreate()
 {
 
-    Gui::Window::Init(780, 480);
+    Gui::Init(780, 480);
     
     std::string nesFile = "./assets/super_mario_bros.nes"; 
     

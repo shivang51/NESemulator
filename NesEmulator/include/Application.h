@@ -10,6 +10,7 @@
 class Application {
 public:
     Application();
+    ~Application();
     void DrawRam(int x, int y, uint16_t nAddr, int nRows, int nColumns);
     void DrawCpu(int x, int y);
     void DrawCode(int x, int y, int nLines);

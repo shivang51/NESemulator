@@ -6,6 +6,7 @@
 -IGui/
 -IGui/include
 -IGui/external/raylib/include
+-IGui/external/raylib/src
 
 -INesEmulator/include
 
