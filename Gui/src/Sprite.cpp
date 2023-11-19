@@ -6,7 +6,6 @@ namespace Gui {
 
 Sprite::Sprite(int width, int height) : mWidth(width), mHeight(height) {
   mPixels = std::vector<Pixel>(width * height);
-
   for (int i = 0; i < mPixels.size(); i++) {
     mPixels[i] = Pixel(i % width, i / width, color);
   }

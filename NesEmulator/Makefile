@@ -16,22 +16,26 @@ LIBS = -lraylib -lGL -lgui -lnescore
 INTERMEDIATE_DIR = ./out/obj/
 
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
+LIB_FILES = $(wildcard $(TARGET_DIR)/*.a)
 
 TARGET = $(TARGET_DIR)/$(NAME)
 
 OBJECTS = $(patsubst %.cpp,$(INTERMEDIATE_DIR)%.o,$(SRC_FILES))
 
 LDFLAGS = $(LIB_INCLUDE_DIRS) $(LIBS)
-COMPILE_FLAGS = -W -Wall -DPLATFORM_DESKTOP -D_DEFAULT_SOURCE -Wno-missing-braces -Wunused-result -O2 
+COMPILE_FLAGS = -W -Wall
 
 $(NAME): $(TARGET)
 
-$(TARGET): $(OBJECTS)
-	$(info [+] Generating $(TARGET))
+$(TARGET): $(OBJECTS) $(LIB_FILES)
 	$(CXX) -o $@ $(OBJECTS) -std=$(CXX_VERSION) $(COMPILE_FLAGS) $(LDFLAGS) 
 
 $(INTERMEDIATE_DIR)%.o: %.cpp | $(INTERMEDIATE_DIR)
 	$(CXX) -o $@ -c $< -std=$(CXX_VERSION) $(INCLUDE) $(COMPILE_FLAGS) 
 
+$(TARGET_DIR)/%.a:
+	$(info checking $@)
+
+
 $(INTERMEDIATE_DIR):
-	mkdir -p $(INTERMEDIATE_DIR)/src
+	mkdir -p $(INTERMEDIATE_DIR)src
